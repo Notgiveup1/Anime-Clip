@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnimeVerse - Futuristic Anime Clip Sharing</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6a11cb;
+            --secondary: #2575fc;
+            --accent: #ff2d75;
+            --dark: #0f0c29;
+            --darker: #0a081c;
+            --light: #f0f0ff;
+            --gray: #8a8aaf;
+            --neon-blue: #00f7ff;
+            --neon-pink: #ff00e6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Exo 2', sans-serif;
+            background: linear-gradient(135deg, var(--darker), var(--dark));
+            color: var(--light);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-attachment: fixed;
+        }
+        
+        /* Header Styles */
+        header {
+            background: rgba(15, 12, 41, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(90, 70, 255, 0.3);
+        }
+        
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-pink));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo i {
+            font-size: 1.5rem;
+        }
+        
+        .search-container {
+            flex: 1;
+            max-width: 600px;
+            margin: 0 2rem;
+            position: relative;
+        }
+        
+        .search-container input {
+            width: 100%;
+            padding: 0.8rem 1.5rem;
+            background: rgba(25, 20, 60, 0.7);
+            border: 1px solid rgba(90, 70, 255, 0.3);
+            border-radius: 50px;
+            color: var(--light);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .search-container input:focus {
+            outline: none;
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 15px rgba(0, 247, 255, 0.4);
+        }
+        
+        .search-container i {
+            position: absolute;
+            right: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+        
+        .user-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btn {
+            padding: 0.6rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-family: 'Exo 2', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            background: transparent;
+            color: var(--light);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(90, 70, 255, 0.3);
+        }
+        
+        .btn:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .btn:hover:before {
+            left: 100%;
+        }
+        
+        .btn-login {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+        }
+        
+        .btn-signup {
+            background: linear-gradient(45deg, var(--accent), #ff6b9c);
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 5rem 5% 3rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(106, 17, 203, 0.2) 0%, transparent 70%);
+            z-index: -1;
+        }
+        
+        .hero h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-pink));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(0, 247, 255, 0.3);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 2.5rem;
+            color: var(--gray);
+            line-height: 1.7;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .btn-large {
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-upload {
+            background: linear-gradient(45deg, var(--accent), #ff6b9c);
+            color: white;
+            box-shadow: 0 5px 25px rgba(255, 45, 117, 0.4);
+        }
+        
+        .btn-browse {
+            background: transparent;
+            color: var(--light);
+            border: 2px solid var(--neon-blue);
+            box-shadow: 0 0 20px rgba(0, 247, 255, 0.3);
+        }
+        
+        .btn-browse:hover {
+            background: rgba(0, 247, 255, 0.1);
+        }
+        
+        /* Categories Section */
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            text-align: center;
+            margin: 4rem 0 2rem;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-pink));
+            border-radius: 2px;
+        }
+        
+        .categories {
+            padding: 0 5%;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+        
+        .category-card {
+            background: rgba(25, 20, 60, 0.6);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(90, 70, 255, 0.2);
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .category-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            border-color: rgba(90, 70, 255, 0.5);
+        }
+        
+        .category-image {
+            height: 200px;
+            width: 100%;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .category-name {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+        
+        .category-info {
+            padding: 1.5rem;
+        }
+        
+        .category-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        .clips-count, .view-count {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* News Section */
+        .news-section {
+            padding: 0 5%;
+            margin-bottom: 4rem;
+        }
+        
+        .news-container {
+            background: rgba(25, 20, 60, 0.4);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 1px solid rgba(90, 70, 255, 0.3);
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .news-container:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink));
+        }
+        
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .news-card {
+            background: rgba(35, 30, 70, 0.7);
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(90, 70, 255, 0.2);
+        }
+        
+        .news-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--neon-blue);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .news-date {
+            color: var(--neon-blue);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .news-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .news-excerpt {
+            color: var(--gray);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        /* Voting Section */
+        .voting-section {
+            padding: 0 5%;
+            margin-bottom: 4rem;
+        }
+        
+        .voting-container {
+            background: rgba(25, 20, 60, 0.4);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 1px solid rgba(90, 70, 255, 0.3);
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .voting-container:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--neon-pink), var(--accent));
+        }
+        
+        .voting-form {
+            display: flex;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .voting-form input {
+            flex: 1;
+            min-width: 250px;
+            padding: 0.9rem 1.5rem;
+            background: rgba(35, 30, 70, 0.7);
+            border: 1px solid rgba(90, 70, 255, 0.3);
+            border-radius: 50px;
+            color: var(--light);
+            font-size: 1rem;
+        }
+        
+        .voting-form input:focus {
+            outline: none;
+            border-color: var(--neon-pink);
+            box-shadow: 0 0 15px rgba(255, 0, 230, 0.4);
+        }
+        
+        .btn-vote {
+            background: linear-gradient(45deg, var(--neon-pink), var(--accent));
+            color: white;
+            border: none;
+            padding: 0 2.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-vote:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 25px rgba(255, 0, 230, 0.5);
+        }
+        
+        .vote-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            margin-top: 2rem;
+        }
+        
+        .vote-item {
+            background: rgba(35, 30, 70, 0.7);
+            border-radius: 10px;
+            padding: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(90, 70, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .vote-item:hover {
+            transform: translateX(10px);
+            border-color: var(--neon-pink);
+        }
+        
+        .vote-rank {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(45deg, var(--neon-pink), var(--accent));
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .vote-info {
+            flex: 1;
+            padding: 0 1.5rem;
+        }
+        
+        .vote-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .vote-keywords {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-top: 0.3rem;
+        }
+        
+        .vote-count {
+            background: rgba(255, 45, 117, 0.2);
+            padding: 0.3rem 1rem;
+            border-radius: 50px;
+            font-weight: 600;
+        }
+        
+        /* Upload Section */
+        .upload-section {
+            padding: 0 5% 5rem;
+        }
+        
+        .upload-container {
+            background: rgba(25, 20, 60, 0.4);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 1px solid rgba(90, 70, 255, 0.3);
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .upload-container:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--neon-blue), var(--secondary));
+        }
+        
+        .upload-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.9rem 1.2rem;
+            background: rgba(35, 30, 70, 0.7);
+            border: 1px solid rgba(90, 70, 255, 0.3);
+            border-radius: 10px;
+            color: var(--light);
+            font-size: 1rem;
+            font-family: 'Exo 2', sans-serif;
+        }
+        
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--neon-blue);
+        }
+        
+        .file-upload {
+            border: 2px dashed rgba(90, 70, 255, 0.5);
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .file-upload:hover {
+            border-color: var(--neon-blue);
+            background: rgba(0, 247, 255, 0.05);
+        }
+        
+        .file-upload i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--neon-blue);
+        }
+        
+        .btn-submit {
+            background: linear-gradient(45deg, var(--neon-blue), var(--secondary));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 1rem;
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 247, 255, 0.4);
+        }
+        
+        /* Footer */
+        footer {
+            background: rgba(10, 8, 28, 0.9);
+            padding: 3rem 5% 2rem;
+            border-top: 1px solid rgba(90, 70, 255, 0.2);
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer-col h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-pink));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .footer-col ul {
+            list-style: none;
+        }
+        
+        .footer-col ul li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-col ul li a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-col ul li a:hover {
+            color: var(--neon-blue);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(90, 70, 255, 0.2);
+            color: var(--light);
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            background: var(--neon-blue);
+            transform: translateY(-5px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 3rem;
+            color: var(--gray);
+            font-size: 0.9rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            border-top: 1px solid rgba(90, 70, 255, 0.2);
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 8, 28, 0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #1a153f, #0f0c29);
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            padding: 2.5rem;
+            position: relative;
+            border: 1px solid rgba(90, 70, 255, 0.5);
+            box-shadow: 0 0 50px rgba(106, 17, 203, 0.6);
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            font-size: 1.5rem;
+            color: var(--gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .close-modal:hover {
+            color: var(--neon-pink);
+            transform: rotate(90deg);
+        }
+        
+        .modal-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-pink));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 900px) {
+            header {
+                flex-wrap: wrap;
+            }
+            
+            .search-container {
+                order: 3;
+                margin: 1rem 0 0;
+                max-width: 100%;
+            }
+            
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+            
+            .categories {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .categories {
+                grid-template-columns: 1fr;
+            }
+            
+            .voting-form {
+                flex-direction: column;
+            }
+            
+            .btn-vote {
+                padding: 0.9rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with Search -->
+    <header>
+        <div class="logo">
+            <i class="fas fa-play-circle"></i>
+            AnimeVerse
+        </div>
+        
+        <div class="search-container">
+            <input type="text" placeholder="Search anime clips...">
+            <i class="fas fa-search"></i>
+        </div>
+        
+        <div class="user-actions">
+            <button class="btn btn-login" id="loginBtn">Login</button>
+            <button class="btn btn-signup">Sign Up</button>
+        </div>
+    </header>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Share Your Anime Moments</h1>
+        <p>Upload, discover, and download the best anime clips from your favorite series. Join our futuristic community of anime enthusiasts.</p>
+        
+        <div class="cta-buttons">
+            <button class="btn-large btn-upload">Upload Clip <i class="fas fa-cloud-upload-alt"></i></button>
+            <button class="btn-large btn-browse">Browse Library <i class="fas fa-play"></i></button>
+        </div>
+    </section>
+    
+    <!-- Categories Section -->
+    <h2 class="section-title">Popular Categories</h2>
+    <section class="categories">
+        <div class="category-card">
+            <div class="category-image" style="background-image: url('https://images.unsplash.com/photo-1635189779577-555debfa8aae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80');">
+                <div class="category-name">Naruto</div>
+            </div>
+            <div class="category-info">
+                <p>Epic ninja battles and character development in the Hidden Leaf Village.</p>
+                <div class="category-stats">
+                    <div class="clips-count"><i class="fas fa-film"></i> 248 clips</div>
+                    <div class="view-count"><i class="fas fa-eye"></i> 1.2M views</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="category-card">
+            <div class="category-image" style="background-image: url('https://images.unsplash.com/photo-1635189779242-4b8f8891b871?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80');">
+                <div class="category-name">Dragon Ball Z</div>
+            </div>
+            <div class="category-info">
+                <p>Legendary battles and power-ups that defined a generation of anime.</p>
+                <div class="category-stats">
+                    <div class="clips-count"><i class="fas fa-film"></i> 187 clips</div>
+                    <div class="view-count"><i class="fas fa-eye"></i> 980K views</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="category-card">
+            <div class="category-image" style="background-image: url('https://images.unsplash.com/photo-1635189779851-5a0b1907c0b5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80');">
+                <div class="category-name">Jujutsu Kaisen</div>
+            </div>
+            <div class="category-info">
+                <p>Modern sorcery battles with stunning animation and intense action.</p>
+                <div class="category-stats">
+                    <div class="clips-count"><i class="fas fa-film"></i> 142 clips</div>
+                    <div class="view-count"><i class="fas fa-eye"></i> 2.3M views</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="category-card">
+            <div class="category-image" style="background-image: url('https://images.unsplash.com/photo-1635189779855-5a0b1907c0b5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80');">
+                <div class="category-name">Demon Slayer</div>
+            </div>
+            <div class="category-info">
+                <p>Breathtaking animation and emotional storytelling in Taisho-era Japan.</p>
+                <div class="category-stats">
+                    <div class="clips-count"><i class="fas fa-film"></i> 205 clips</div>
+                    <div class="view-count"><i class="fas fa-eye"></i> 3.1M views</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- News Section -->
+    <h2 class="section-title">Latest Anime News</h2>
+    <section class="news-section">
+        <div class="news-container">
+            <div class="news-grid">
+                <div class="news-card">
+                    <div class="news-date">June 18, 2025</div>
+                    <div class="news-title">New Season of Jujutsu Kaisen Announced</div>
+                    <div class="news-excerpt">Studio MAPPA confirms production of Jujutsu Kaisen season 3 with a stunning new trailer showcasing epic battles.</div>
+                </div>
+                
+                <div class="news-card">
+                    <div class="news-date">June 15, 2025</div>
+                    <div class="news-title">Demon Slayer Movie Breaks Records</div>
+                    <div class="news-excerpt">The new Demon Slayer movie has become the highest-grossing anime film of all time in just two weeks.</div>
+                </div>
+                
+                <div class="news-card">
+                    <div class="news-date">June 12, 2025</div>
+                    <div class="news-title">One Piece Manga Reaches Final Saga</div>
+                    <div class="news-excerpt">Eiichiro Oda announces that the beloved pirate adventure is entering its final story arc after 25 years.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Voting Section -->
+    <h2 class="section-title">Vote for New Anime</h2>
+    <section class="voting-section">
+        <div class="voting-container">
+            <p>Help us decide which anime to add next! Vote for your favorite unlisted series.</p>
+            
+            <div class="voting-form">
+                <input type="text" placeholder="Anime Name">
+                <input type="text" placeholder="Keywords (comma separated)">
+                <button class="btn-vote">Vote Now <i class="fas fa-vote-yea"></i></button>
+            </div>
+            
+            <div class="vote-list">
+                <div class="vote-item">
+                    <div class="vote-rank">1</div>
+                    <div class="vote-info">
+                        <div class="vote-name">Chainsaw Man</div>
+                        <div class="vote-keywords">Denji, Makima, action, horror</div>
+                    </div>
+                    <div class="vote-count">1,248 votes</div>
+                </div>
+                
+                <div class="vote-item">
+                    <div class="vote-rank">2</div>
+                    <div class="vote-info">
+                        <div class="vote-name">Attack on Titan: Final Chapter</div>
+                        <div class="vote-keywords">Eren, Mikasa, titans, finale</div>
+                    </div>
+                    <div class="vote-count">1,112 votes</div>
+                </div>
+                
+                <div class="vote-item">
+                    <div class="vote-rank">3</div>
+                    <div class="vote-info">
+                        <div class="vote-name">My Hero Academia Season 7</div>
+                        <div class="vote-keywords">Deku, All Might, heroes, villains</div>
+                    </div>
+                    <div class="vote-count">987 votes</div>
+                </div>
+                
+                <div class="vote-item">
+                    <div class="vote-rank">4</div>
+                    <div class="vote-info">
+                        <div class="vote-name">Bleach: Thousand-Year Blood War</div>
+                        <div class="vote-keywords">Ichigo, Soul Society, Quincy, final arc</div>
+                    </div>
+                    <div class="vote-count">845 votes</div>
+                </div>
+                
+                <div class="vote-item">
+                    <div class="vote-rank">5</div>
+                    <div class="vote-info">
+                        <div class="vote-name">One Punch Man Season 3</div>
+                        <div class="vote-keywords">Saitama, Genos, heroes, monsters</div>
+                    </div>
+                    <div class="vote-count">712 votes</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Upload Section -->
+    <h2 class="section-title">Host Dashboard</h2>
+    <section class="upload-section">
+        <div class="upload-container">
+            <p>As a host, you can create categories, upload clips, and manage content.</p>
+            
+            <div class="upload-form">
+                <div>
+                    <div class="form-group">
+                        <label for="category">Create New Category</label>
+                        <input type="text" id="category" placeholder="Category Name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="anime-name">Anime Name</label>
+                        <input type="text" id="anime-name" placeholder="Enter anime name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="clip-name">Clip Title</label>
+                        <input type="text" id="clip-name" placeholder="Enter clip title">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="clip-desc">Clip Description</label>
+                        <textarea id="clip-desc" rows="3" placeholder="Describe your clip"></textarea>
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="form-group">
+                        <label>Upload Clip</label>
+                        <div class="file-upload">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Drag & drop your clip here</p>
+                            <p>or</p>
+                            <button class="btn">Browse Files</button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="category-select">Select Category</label>
+                        <select id="category-select">
+                            <option value="">Select a category</option>
+                            <option value="naruto">Naruto</option>
+                            <option value="dbz">Dragon Ball Z</option>
+                            <option value="jujutsu">Jujutsu Kaisen</option>
+                            <option value="demonslayer">Demon Slayer</option>
+                        </select>
+                    </div>
+                    
+                    <button class="btn-submit">Upload Clip <i class="fas fa-upload"></i></button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h3>AnimeVerse</h3>
+                <p>The ultimate platform for anime enthusiasts to share and discover the best anime moments.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-discord"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-col">
+                <h3>Navigation</h3>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Browse Anime</a></li>
+                    <li><a href="#">Popular Clips</a></li>
+                    <li><a href="#">New Arrivals</a></li>
+                    <li><a href="#">Categories</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h3>Legal</h3>
+                <ul>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Copyright Policy</a></li>
+                    <li><a href="#">DMCA</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h3>Support</h3>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Community Guidelines</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Report a Problem</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            &copy; 2025 AnimeVerse. All rights reserved. This is a demo site for educational purposes.
+        </div>
+    </footer>
+    
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">&times;</span>
+            <h3 class="modal-title">Login to AnimeVerse</h3>
+            
+            <div class="form-group">
+                <label for="login-email">Email</label>
+                <input type="email" id="login-email" placeholder="Enter your email">
+            </div>
+            
+            <div class="form-group">
+                <label for="login-password">Password</label>
+                <input type="password" id="login-password" placeholder="Enter your password">
+            </div>
+            
+            <div style="text-align: right; margin-bottom: 1.5rem;">
+                <a href="#" style="color: var(--neon-blue); text-decoration: none;">Forgot Password?</a>
+            </div>
+            
+            <button class="btn-submit">Login <i class="fas fa-sign-in-alt"></i></button>
+            
+            <p style="text-align: center; margin-top: 1.5rem; color: var(--gray);">
+                Don't have an account? <a href="#" style="color: var(--neon-pink); text-decoration: none;">Sign Up</a>
+            </p>
+            
+            <div style="margin-top: 2rem; text-align: center;">
+                <p style="color: var(--neon-blue); margin-bottom: 0.5rem;">Host Login:</p>
+                <p>Email: bijoydas61645@gmail.com</p>
+                <p>Password: Bijoydas61645</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Modal functionality
+        const loginBtn = document.getElementById('loginBtn');
+        const loginModal = document.getElementById('loginModal');
+        const closeModal = document.getElementById('closeModal');
+        
+        loginBtn.addEventListener('click', () => {
+            loginModal.style.display = 'flex';
+        });
+        
+        closeModal.addEventListener('click', () => {
+            loginModal.style.display = 'none';
+        });
+        
+        window.addEventListener('click', (e) => {
+            if (e.target === loginModal) {
+                loginModal.style.display = 'none';
+            }
+        });
+        
+        // Animation for cards on scroll
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = 1;
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        // Apply animation to elements
+        document.querySelectorAll('.category-card, .news-card, .vote-item').forEach(card => {
+            card.style.opacity = 0;
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            observer.observe(card);
+        });
+        
+        // Simulate file upload
+        document.querySelector('.file-upload').addEventListener('click', function() {
+            alert('Clip upload functionality would be implemented with Firebase Storage in a real application');
+        });
+        
+        // Voting functionality
+        document.querySelector('.btn-vote').addEventListener('click', function() {
+            const animeName = document.querySelector('.voting-form input:first-child').value;
+            if (!animeName) {
+                alert('Please enter an anime name');
+                return;
+            }
+            alert(`Vote for "${animeName}" recorded! In a real application, this would update the Firestore database.`);
+        });
+    </script>
+</body>
+</html>
