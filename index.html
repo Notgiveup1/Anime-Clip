@@ -17,6 +17,9 @@
             --gray: #8a8aaf;
             --neon-blue: #00f7ff;
             --neon-pink: #ff00e6;
+            --success: #00e676;
+            --warning: #ff9100;
+            --error: #ff5252;
         }
         
         * {
@@ -853,6 +856,40 @@
             font-size: 0.95rem;
         }
         
+        /* Toast Messages */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateX(200%);
+            transition: transform 0.3s ease-in-out;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+        }
+        
+        .toast-success {
+            background: linear-gradient(45deg, #00c853, #00e676);
+        }
+        
+        .toast-error {
+            background: linear-gradient(45deg, #ff1744, #ff5252);
+        }
+        
+        .toast-warning {
+            background: linear-gradient(45deg, #ff9100, #ffab40);
+        }
+        
         /* Responsive Design */
         @media (max-width: 900px) {
             header {
@@ -907,6 +944,9 @@
     </style>
 </head>
 <body>
+    <!-- Toast Messages Container -->
+    <div id="toastContainer"></div>
+    
     <!-- Header with Search -->
     <header>
         <div class="logo">
@@ -1180,32 +1220,32 @@
                     name: "Naruto",
                     image: "https://images.unsplash.com/photo-1635189779577-555debfa8aae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
                     description: "Epic ninja battles and character development in the Hidden Leaf Village.",
-                    clips: 248,
-                    views: 1200000
+                    clips: [],
+                    views: 0
                 },
                 {
                     id: 2,
                     name: "Dragon Ball Z",
                     image: "https://images.unsplash.com/photo-1635189779242-4b8f8891b871?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
                     description: "Legendary battles and power-ups that defined a generation of anime.",
-                    clips: 187,
-                    views: 980000
+                    clips: [],
+                    views: 0
                 },
                 {
                     id: 3,
                     name: "Jujutsu Kaisen",
                     image: "https://images.unsplash.com/photo-1635189779851-5a0b1907c0b5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
                     description: "Modern sorcery battles with stunning animation and intense action.",
-                    clips: 142,
-                    views: 2300000
+                    clips: [],
+                    views: 0
                 },
                 {
                     id: 4,
                     name: "Demon Slayer",
                     image: "https://images.unsplash.com/photo-1635189779855-5a0b1907c0b5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
                     description: "Breathtaking animation and emotional storytelling in Taisho-era Japan.",
-                    clips: 205,
-                    views: 3100000
+                    clips: [],
+                    views: 0
                 }
             ],
             news: [
@@ -1228,7 +1268,8 @@
                     excerpt: "Eiichiro Oda announces that the beloved pirate adventure is entering its final story arc after 25 years."
                 }
             ],
-            votes: [] // Will be populated by user votes
+            votes: [], // Will be populated by user votes
+            userVotes: {} // Track which users have voted for which anime
         };
 
         // DOM Elements
@@ -1248,6 +1289,38 @@
         const hostVoteList = document.getElementById('hostVoteList');
         const voteBtn = document.getElementById('voteBtn');
         const uploadClipBtn = document.getElementById('uploadClipBtn');
+        const toastContainer = document.getElementById('toastContainer');
+
+        // Known anime titles for validation
+        const knownAnime = [
+            "Naruto", "Dragon Ball Z", "Jujutsu Kaisen", "Demon Slayer", 
+            "One Piece", "Attack on Titan", "My Hero Academia", "Bleach",
+            "Death Note", "Fullmetal Alchemist", "Cowboy Bebop", "Hunter x Hunter",
+            "Neon Genesis Evangelion", "One Punch Man", "Sword Art Online",
+            "Tokyo Ghoul", "Fairy Tail", "Black Clover", "Haikyuu", "Re:Zero"
+        ];
+
+        // Show toast message
+        function showToast(message, type) {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-exclamation-triangle'}"></i>
+                ${message}
+            `;
+            toastContainer.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 4000);
+        }
 
         // Modal functionality
         loginBtn.addEventListener('click', () => {
@@ -1282,7 +1355,7 @@
             const password = document.getElementById('login-password').value;
             
             if (!email || !password) {
-                alert('Please enter both email and password');
+                showToast('Please enter both email and password', 'error');
                 return;
             }
             
@@ -1292,6 +1365,7 @@
                 state.isHost = true;
                 authModal.style.display = 'none';
                 updateUI();
+                showToast('Host login successful!', 'success');
                 return;
             }
             
@@ -1303,8 +1377,9 @@
                 state.currentUser = user;
                 authModal.style.display = 'none';
                 updateUI();
+                showToast('Login successful!', 'success');
             } else {
-                alert('Invalid email or password');
+                showToast('Invalid email or password', 'error');
             }
         });
         
@@ -1315,19 +1390,19 @@
             const confirm = document.getElementById('signup-confirm').value;
             
             if (!email || !password || !confirm) {
-                alert('Please fill all fields');
+                showToast('Please fill all fields', 'error');
                 return;
             }
             
             if (password !== confirm) {
-                alert('Passwords do not match');
+                showToast('Passwords do not match', 'error');
                 return;
             }
             
             const users = JSON.parse(localStorage.getItem('animeverse_users')) || [];
             
             if (users.find(u => u.email === email)) {
-                alert('Email already registered');
+                showToast('Email already registered', 'error');
                 return;
             }
             
@@ -1344,7 +1419,7 @@
             state.currentUser = newUser;
             authModal.style.display = 'none';
             updateUI();
-            alert('Account created successfully!');
+            showToast('Account created successfully!', 'success');
         });
         
         // Logout functionality
@@ -1352,71 +1427,133 @@
             state.currentUser = null;
             state.isHost = false;
             updateUI();
+            showToast('You have been logged out', 'success');
         });
         
-        // Vote functionality
+        // Vote functionality with enhanced rules
         voteBtn.addEventListener('click', () => {
             if (!state.currentUser) {
-                alert('Please login to vote');
+                showToast('Please login to vote', 'error');
                 showModal();
                 return;
             }
             
-            const animeName = document.getElementById('animeNameInput').value;
+            const animeName = document.getElementById('animeNameInput').value.trim();
             const keywords = document.getElementById('animeKeywords').value;
             
             if (!animeName) {
-                alert('Please enter an anime name');
+                showToast('Please enter an anime name', 'error');
                 return;
             }
             
-            // Check if this anime already has votes
-            const existingVote = state.votes.find(v => v.name.toLowerCase() === animeName.toLowerCase());
+            // Validate anime existence (simulated with known anime list)
+            const normalizedAnimeName = animeName.toLowerCase();
+            const animeExists = knownAnime.some(anime => anime.toLowerCase() === normalizedAnimeName);
             
-            if (existingVote) {
-                existingVote.count++;
-                existingVote.voters.push(state.currentUser.email);
+            if (!animeExists) {
+                showToast('This anime does not exist in our database', 'error');
+                return;
+            }
+            
+            // Check if user has already voted for this anime
+            if (state.userVotes[state.currentUser.email]?.includes(normalizedAnimeName)) {
+                showToast('You have already voted for this anime', 'error');
+                return;
+            }
+            
+            // Check if anime is already in the vote list
+            const existingVoteIndex = state.votes.findIndex(v => 
+                v.name.toLowerCase() === normalizedAnimeName
+            );
+            
+            if (existingVoteIndex !== -1) {
+                // Existing anime - add vote
+                state.votes[existingVoteIndex].count++;
+                state.votes[existingVoteIndex].voters.push(state.currentUser.email);
+                
+                // Track user vote
+                if (!state.userVotes[state.currentUser.email]) {
+                    state.userVotes[state.currentUser.email] = [];
+                }
+                state.userVotes[state.currentUser.email].push(normalizedAnimeName);
+                
+                showToast(`Vote for "${animeName}" recorded!`, 'success');
             } else {
-                state.votes.push({
+                // New anime - add to vote list
+                const newVote = {
                     id: Date.now(),
                     name: animeName,
-                    keywords: keywords.split(',').map(k => k.trim()),
+                    keywords: keywords.split(',').map(k => k.trim()).filter(k => k),
                     count: 1,
                     voters: [state.currentUser.email],
                     timestamp: new Date().toISOString()
-                });
+                };
+                state.votes.push(newVote);
+                
+                // Track user vote
+                if (!state.userVotes[state.currentUser.email]) {
+                    state.userVotes[state.currentUser.email] = [];
+                }
+                state.userVotes[state.currentUser.email].push(normalizedAnimeName);
+                
+                showToast(`"${animeName}" added to vote list!`, 'success');
             }
             
             // Sort by vote count
             state.votes.sort((a, b) => b.count - a.count);
             
-            // Only keep top 10
-            state.votes = state.votes.slice(0, 10);
-            
             // Update UI
             renderVoteList();
+            if (state.isHost) {
+                renderHostVoteList();
+            }
             
             // Clear inputs
             document.getElementById('animeNameInput').value = '';
             document.getElementById('animeKeywords').value = '';
-            
-            alert(`Vote for "${animeName}" recorded!`);
         });
         
         // Upload clip functionality (host only)
         uploadClipBtn.addEventListener('click', () => {
             if (!state.isHost) return;
             
-            const category = document.getElementById('category').value;
+            const categoryName = document.getElementById('category').value;
             const animeName = document.getElementById('anime-name').value;
             const clipName = document.getElementById('clip-name').value;
             
-            if (!category || !animeName || !clipName) {
-                alert('Please fill all required fields');
+            if (!categoryName || !animeName || !clipName) {
+                showToast('Please fill all required fields', 'error');
                 return;
             }
             
-            alert(`Clip "${clipName}" from ${animeName} uploaded to ${category} category!`);
+            // Add new category if it doesn't exist
+            const categoryExists = state.categories.some(cat => cat.name.toLowerCase() === categoryName.toLowerCase());
+            
+            if (!categoryExists) {
+                const newCategory = {
+                    id: Date.now(),
+                    name: categoryName,
+                    image: "https://images.unsplash.com/photo-1533279443086-d1c19a186416?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                    description: `Clips from ${categoryName}`,
+                    clips: [],
+                    views: 0
+                };
+                state.categories.push(newCategory);
+                showToast(`New category "${categoryName}" created!`, 'success');
+            }
+            
+            // Add clip to category
+            const category = state.categories.find(cat => cat.name.toLowerCase() === categoryName.toLowerCase());
+            if (category) {
+                category.clips.push({
+                    id: Date.now(),
+                    title: clipName,
+                    anime: animeName,
+                    description: document.getElementById('clip-desc').value || "No description provided",
+                    views: 0
+                });
+                showToast(`Clip "${clipName}" uploaded to ${categoryName} category!`, 'success');
+            }
             
             // Reset form
             document.getElementById('category').value = '';
@@ -1424,13 +1561,35 @@
             document.getElementById('clip-name').value = '';
             document.getElementById('clip-desc').value = '';
             document.getElementById('category-select').selectedIndex = 0;
+            
+            // Update UI
+            updateUI();
         });
         
         // Remove vote functionality
         function removeVote(voteId) {
-            state.votes = state.votes.filter(v => v.id !== voteId);
-            renderVoteList();
-            renderHostVoteList();
+            const voteIndex = state.votes.findIndex(v => v.id === voteId);
+            if (voteIndex !== -1) {
+                const vote = state.votes[voteIndex];
+                
+                // Remove this anime from all users' vote history
+                vote.voters.forEach(email => {
+                    if (state.userVotes[email]) {
+                        const animeIndex = state.userVotes[email].indexOf(vote.name.toLowerCase());
+                        if (animeIndex !== -1) {
+                            state.userVotes[email].splice(animeIndex, 1);
+                        }
+                    }
+                });
+                
+                // Remove the vote
+                state.votes.splice(voteIndex, 1);
+                showToast(`Vote for "${vote.name}" removed!`, 'success');
+                
+                // Update UI
+                renderVoteList();
+                renderHostVoteList();
+            }
         }
         
         // Helper Functions
@@ -1498,17 +1657,30 @@
                     <div class="category-info">
                         <p>${category.description}</p>
                         <div class="category-stats">
-                            <div class="clips-count"><i class="fas fa-film"></i> ${category.clips} clips</div>
-                            <div class="view-count"><i class="fas fa-eye"></i> ${category.views.toLocaleString()} views</div>
+                            <div class="clips-count"><i class="fas fa-film"></i> ${category.clips.length} clips</div>
+                            <div class="view-count"><i class="fas fa-eye"></i> ${category.views} views</div>
                         </div>
                         <div class="action-buttons">
                             <button class="btn btn-action btn-download">Download <i class="fas fa-download"></i></button>
-                            ${state.isHost ? `<button class="btn btn-action btn-delete">Delete <i class="fas fa-trash"></i></button>` : ''}
+                            ${state.isHost ? `<button class="btn btn-action btn-delete" onclick="deleteCategory(${category.id})">Delete <i class="fas fa-trash"></i></button>` : ''}
                         </div>
                     </div>
                 `;
                 categoriesSection.appendChild(card);
             });
+        }
+        
+        // Delete category function
+        window.deleteCategory = function(categoryId) {
+            if (!state.isHost) return;
+            
+            const categoryIndex = state.categories.findIndex(cat => cat.id === categoryId);
+            if (categoryIndex !== -1) {
+                const categoryName = state.categories[categoryIndex].name;
+                state.categories.splice(categoryIndex, 1);
+                showToast(`Category "${categoryName}" deleted!`, 'success');
+                updateUI();
+            }
         }
         
         function renderNews() {
@@ -1534,14 +1706,14 @@
                 return;
             }
             
-            state.votes.forEach((vote, index) => {
+            state.votes.slice(0, 10).forEach((vote, index) => {
                 const item = document.createElement('div');
                 item.className = 'vote-item';
                 item.innerHTML = `
                     <div class="vote-rank">${index + 1}</div>
                     <div class="vote-info">
                         <div class="vote-name">${vote.name}</div>
-                        <div class="vote-keywords">${vote.keywords.join(', ')}</div>
+                        <div class="vote-keywords">${vote.keywords.join(', ') || 'No keywords'}</div>
                     </div>
                     <div class="vote-count">${vote.count} votes</div>
                 `;
@@ -1559,14 +1731,14 @@
                 return;
             }
             
-            state.votes.forEach((vote, index) => {
+            state.votes.slice(0, 10).forEach((vote, index) => {
                 const item = document.createElement('div');
                 item.className = 'vote-item';
                 item.innerHTML = `
                     <div class="vote-rank">${index + 1}</div>
                     <div class="vote-info">
                         <div class="vote-name">${vote.name}</div>
-                        <div class="vote-keywords">${vote.keywords.join(', ')}</div>
+                        <div class="vote-keywords">${vote.keywords.join(', ') || 'No keywords'}</div>
                     </div>
                     <div class="vote-count">${vote.count} votes</div>
                     <button class="remove-vote" onclick="removeVote(${vote.id})">
@@ -1579,6 +1751,16 @@
         
         // Initialize the app
         document.addEventListener('DOMContentLoaded', () => {
+            // Load state from localStorage if available
+            const savedState = localStorage.getItem('animeverse_state');
+            if (savedState) {
+                const parsed = JSON.parse(savedState);
+                state.categories = parsed.categories || state.categories;
+                state.news = parsed.news || state.news;
+                state.votes = parsed.votes || state.votes;
+                state.userVotes = parsed.userVotes || state.userVotes;
+            }
+            
             updateUI();
             
             // Animation for cards on scroll
@@ -1603,6 +1785,16 @@
                 card.style.transform = 'translateY(20px)';
                 card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
                 observer.observe(card);
+            });
+            
+            // Save state to localStorage before unload
+            window.addEventListener('beforeunload', () => {
+                localStorage.setItem('animeverse_state', JSON.stringify({
+                    categories: state.categories,
+                    news: state.news,
+                    votes: state.votes,
+                    userVotes: state.userVotes
+                }));
             });
         });
     </script>
