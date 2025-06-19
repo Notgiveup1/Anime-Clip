@@ -265,6 +265,7 @@
             border: 1px solid rgba(90, 70, 255, 0.2);
             position: relative;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
         }
         
         .category-card:hover {
@@ -602,6 +603,12 @@
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
+            position: relative;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
         
         .file-upload:hover {
@@ -613,6 +620,16 @@
             font-size: 3rem;
             margin-bottom: 1rem;
             color: var(--neon-blue);
+        }
+        
+        .file-upload input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
         }
         
         .btn-submit {
@@ -890,6 +907,103 @@
             background: linear-gradient(45deg, #ff9100, #ffab40);
         }
         
+        /* Category Clips Modal */
+        .clips-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 8, 28, 0.95);
+            z-index: 2000;
+            overflow-y: auto;
+            padding: 2rem 0;
+        }
+        
+        .clips-modal-content {
+            background: linear-gradient(135deg, #1a153f, #0f0c29);
+            border-radius: 15px;
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2.5rem;
+            position: relative;
+            border: 1px solid rgba(90, 70, 255, 0.5);
+            box-shadow: 0 0 50px rgba(106, 17, 203, 0.6);
+        }
+        
+        .clips-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .clips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .clip-card {
+            background: rgba(35, 30, 70, 0.7);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(90, 70, 255, 0.2);
+        }
+        
+        .clip-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--neon-blue);
+        }
+        
+        .clip-thumbnail {
+            height: 150px;
+            width: 100%;
+            background-color: #2a2350;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .play-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            background: rgba(0, 0, 0, 0.5);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .clip-info {
+            padding: 1rem;
+        }
+        
+        .clip-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .clip-anime {
+            color: var(--neon-blue);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .clip-desc {
+            color: var(--gray);
+            font-size: 0.85rem;
+        }
+        
         /* Responsive Design */
         @media (max-width: 900px) {
             header {
@@ -955,8 +1069,8 @@
         </div>
         
         <div class="search-container">
-            <input type="text" placeholder="Search anime clips...">
-            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Search anime clips or categories...">
+            <i class="fas fa-search" id="searchBtn"></i>
         </div>
         
         <div class="user-actions">
@@ -1025,35 +1139,66 @@
             <div class="dashboard-grid">
                 <div class="dashboard-card">
                     <div class="card-title"><i class="fas fa-film"></i> Total Clips</div>
-                    <div class="card-stats" id="totalClips">42</div>
+                    <div class="card-stats" id="totalClips">0</div>
                     <div class="card-description">Anime clips available for download</div>
                 </div>
                 
                 <div class="dashboard-card">
                     <div class="card-title"><i class="fas fa-layer-group"></i> Categories</div>
-                    <div class="card-stats" id="totalCategories">5</div>
+                    <div class="card-stats" id="totalCategories">0</div>
                     <div class="card-description">Anime categories on the platform</div>
                 </div>
                 
                 <div class="dashboard-card">
                     <div class="card-title"><i class="fas fa-users"></i> Active Users</div>
-                    <div class="card-stats" id="activeUsers">128</div>
+                    <div class="card-stats" id="activeUsers">0</div>
                     <div class="card-description">Users active in the last 30 days</div>
                 </div>
             </div>
             
-            <h2 class="section-title">Manage Content</h2>
+            <h2 class="section-title">Create New Category</h2>
             
             <div class="upload-container">
-                <p>As a host, you can create categories, upload clips, and manage content.</p>
-                
                 <div class="upload-form">
                     <div>
                         <div class="form-group">
-                            <label for="category">Create New Category</label>
-                            <input type="text" id="category" placeholder="Category Name">
+                            <label for="new-category-name">Category Name</label>
+                            <input type="text" id="new-category-name" placeholder="Category Name">
                         </div>
                         
+                        <div class="form-group">
+                            <label for="new-category-keywords">Keywords (comma separated)</label>
+                            <input type="text" id="new-category-keywords" placeholder="Keywords for search">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Category Image</label>
+                            <div class="file-upload">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Drag & drop your image here</p>
+                                <p>or</p>
+                                <button class="btn" id="browseCategoryImage">Browse Files</button>
+                                <input type="file" id="categoryImageUpload" accept="image/*">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="form-group">
+                            <label for="category-image-url">Or Enter Image URL</label>
+                            <input type="text" id="category-image-url" placeholder="Image URL">
+                        </div>
+                        
+                        <button class="btn-submit" id="createCategoryBtn">Create Category <i class="fas fa-plus"></i></button>
+                    </div>
+                </div>
+            </div>
+            
+            <h2 class="section-title">Upload Anime Clip</h2>
+            
+            <div class="upload-container">
+                <div class="upload-form">
+                    <div>
                         <div class="form-group">
                             <label for="anime-name">Anime Name</label>
                             <input type="text" id="anime-name" placeholder="Enter anime name">
@@ -1072,12 +1217,13 @@
                     
                     <div>
                         <div class="form-group">
-                            <label>Upload Clip</label>
-                            <div class="file-upload" id="fileUpload">
+                            <label for="clip-upload">Upload Clip</label>
+                            <div class="file-upload">
                                 <i class="fas fa-cloud-upload-alt"></i>
                                 <p>Drag & drop your clip here</p>
                                 <p>or</p>
-                                <button class="btn">Browse Files</button>
+                                <button class="btn" id="browseClip">Browse Files</button>
+                                <input type="file" id="clipUpload" accept="video/*">
                             </div>
                         </div>
                         
@@ -1085,10 +1231,7 @@
                             <label for="category-select">Select Category</label>
                             <select id="category-select">
                                 <option value="">Select a category</option>
-                                <option value="naruto">Naruto</option>
-                                <option value="dbz">Dragon Ball Z</option>
-                                <option value="jujutsu">Jujutsu Kaisen</option>
-                                <option value="demonslayer">Demon Slayer</option>
+                                <!-- Categories will be populated dynamically -->
                             </select>
                         </div>
                         
@@ -1106,6 +1249,20 @@
                 </div>
             </div>
         </section>
+    </div>
+    
+    <!-- Category Clips Modal -->
+    <div class="clips-modal" id="clipsModal">
+        <div class="clips-modal-content">
+            <div class="clips-header">
+                <h2 class="section-title" id="categoryTitle">Category Clips</h2>
+                <button class="btn btn-logout" id="closeClipsModal">Close</button>
+            </div>
+            
+            <div class="clips-grid" id="clipsGrid">
+                <!-- Clips will be loaded dynamically -->
+            </div>
+        </div>
     </div>
     
     <!-- Footer -->
@@ -1204,6 +1361,15 @@
                     <input type="password" id="signup-confirm" placeholder="Confirm your password">
                 </div>
                 
+                <div class="form-group">
+                    <div style="display: flex; align-items: center; margin-bottom: 1rem;">
+                        <input type="checkbox" id="email-consent" style="margin-right: 10px;">
+                        <label for="email-consent" style="color: var(--gray); font-size: 0.9rem;">
+                            I consent to email verification for account creation
+                        </label>
+                    </div>
+                </div>
+                
                 <button class="btn-submit" id="signupSubmit">Sign Up <i class="fas fa-user-plus"></i></button>
             </div>
         </div>
@@ -1218,32 +1384,36 @@
                 {
                     id: 1,
                     name: "Naruto",
-                    image: "https://images.unsplash.com/photo-1635189779577-555debfa8aae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                    image: "https://occ-0-8407-92.1.nflxso.net/dnm/api/v6/Z-WHgqd_TeJxSuha8aZ5WpyLcX8/AAAABdIFYfkylotuQsosH1WlGXHoouJSR59IKXL-xHz1EBGnDra3h7PiJ0E7Oe8wZzKk0hpHSKQGHi7VrGSs64kozAD0u9dXXKO-T4SM.jpg?r=33e",
                     description: "Epic ninja battles and character development in the Hidden Leaf Village.",
+                    keywords: ["naruto", "ninja", "shippuden", "hokage"],
                     clips: [],
                     views: 0
                 },
                 {
                     id: 2,
                     name: "Dragon Ball Z",
-                    image: "https://images.unsplash.com/photo-1635189779242-4b8f8891b871?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                    image: "https://static0.gamerantimages.com/wordpress/wp-content/uploads/2022/09/dragon-ball-better-than-dbz-adventure-fun.jpg",
                     description: "Legendary battles and power-ups that defined a generation of anime.",
+                    keywords: ["dbz", "dragon ball", "goku", "saiyan"],
                     clips: [],
                     views: 0
                 },
                 {
                     id: 3,
                     name: "Jujutsu Kaisen",
-                    image: "https://images.unsplash.com/photo-1635189779851-5a0b1907c0b5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                    image: "https://static1.colliderimages.com/wordpress/wp-content/uploads/2023/10/jujutsu-kaisen-poster.jpg",
                     description: "Modern sorcery battles with stunning animation and intense action.",
+                    keywords: ["jujutsu", "jjk", "sorcery", "curses"],
                     clips: [],
                     views: 0
                 },
                 {
                     id: 4,
                     name: "Demon Slayer",
-                    image: "https://images.unsplash.com/photo-1635189779855-5a0b1907c0b5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                    image: "https://img.etimg.com/thumb/width-1600,height-900,imgsize-74464,resizemode-75,msid-103914313/news/international/us/demon-slayer-season-5-heres-everything-we-about-the-series-so-far.jpg",
                     description: "Breathtaking animation and emotional storytelling in Taisho-era Japan.",
+                    keywords: ["demon slayer", "kimetsu", "tanjiro", "nezuko"],
                     clips: [],
                     views: 0
                 }
@@ -1272,6 +1442,15 @@
             userVotes: {} // Track which users have voted for which anime
         };
 
+        // Known anime titles for validation
+        const knownAnime = [
+            "Naruto", "Dragon Ball Z", "Jujutsu Kaisen", "Demon Slayer", 
+            "One Piece", "Attack on Titan", "My Hero Academia", "Bleach",
+            "Death Note", "Fullmetal Alchemist", "Cowboy Bebop", "Hunter x Hunter",
+            "Neon Genesis Evangelion", "One Punch Man", "Sword Art Online",
+            "Tokyo Ghoul", "Fairy Tail", "Black Clover", "Haikyuu", "Re:Zero"
+        ];
+
         // DOM Elements
         const authModal = document.getElementById('authModal');
         const loginBtn = document.getElementById('loginBtn');
@@ -1289,16 +1468,17 @@
         const hostVoteList = document.getElementById('hostVoteList');
         const voteBtn = document.getElementById('voteBtn');
         const uploadClipBtn = document.getElementById('uploadClipBtn');
+        const createCategoryBtn = document.getElementById('createCategoryBtn');
         const toastContainer = document.getElementById('toastContainer');
-
-        // Known anime titles for validation
-        const knownAnime = [
-            "Naruto", "Dragon Ball Z", "Jujutsu Kaisen", "Demon Slayer", 
-            "One Piece", "Attack on Titan", "My Hero Academia", "Bleach",
-            "Death Note", "Fullmetal Alchemist", "Cowboy Bebop", "Hunter x Hunter",
-            "Neon Genesis Evangelion", "One Punch Man", "Sword Art Online",
-            "Tokyo Ghoul", "Fairy Tail", "Black Clover", "Haikyuu", "Re:Zero"
-        ];
+        const clipsModal = document.getElementById('clipsModal');
+        const closeClipsModal = document.getElementById('closeClipsModal');
+        const clipsGrid = document.getElementById('clipsGrid');
+        const categoryTitle = document.getElementById('categoryTitle');
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const categorySelect = document.getElementById('category-select');
+        const clipUpload = document.getElementById('clipUpload');
+        const categoryImageUpload = document.getElementById('categoryImageUpload');
 
         // Show toast message
         function showToast(message, type) {
@@ -1383,14 +1563,27 @@
             }
         });
         
-        // Signup functionality
+        // Signup functionality with email verification consent
         signupSubmit.addEventListener('click', () => {
             const email = document.getElementById('signup-email').value;
             const password = document.getElementById('signup-password').value;
             const confirm = document.getElementById('signup-confirm').value;
+            const consent = document.getElementById('email-consent').checked;
             
             if (!email || !password || !confirm) {
                 showToast('Please fill all fields', 'error');
+                return;
+            }
+            
+            if (!consent) {
+                showToast('You must consent to email verification', 'error');
+                return;
+            }
+            
+            // Validate email format
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showToast('Please enter a valid email address', 'error');
                 return;
             }
             
@@ -1406,20 +1599,27 @@
                 return;
             }
             
-            const newUser = {
-                email,
-                password,
-                role: 'user',
-                joined: new Date().toISOString()
-            };
+            // Simulate email verification
+            showToast('Verification email sent! Please check your inbox.', 'success');
             
-            users.push(newUser);
-            localStorage.setItem('animeverse_users', JSON.stringify(users));
-            
-            state.currentUser = newUser;
-            authModal.style.display = 'none';
-            updateUI();
-            showToast('Account created successfully!', 'success');
+            // In a real app, you would send a verification email here
+            setTimeout(() => {
+                const newUser = {
+                    email,
+                    password,
+                    role: 'user',
+                    joined: new Date().toISOString(),
+                    verified: true // Simulate verified after delay
+                };
+                
+                users.push(newUser);
+                localStorage.setItem('animeverse_users', JSON.stringify(users));
+                
+                state.currentUser = newUser;
+                authModal.style.display = 'none';
+                updateUI();
+                showToast('Account created and verified successfully!', 'success');
+            }, 2000);
         });
         
         // Logout functionality
@@ -1517,50 +1717,75 @@
         uploadClipBtn.addEventListener('click', () => {
             if (!state.isHost) return;
             
-            const categoryName = document.getElementById('category').value;
             const animeName = document.getElementById('anime-name').value;
             const clipName = document.getElementById('clip-name').value;
+            const categoryId = parseInt(categorySelect.value);
             
-            if (!categoryName || !animeName || !clipName) {
+            if (!animeName || !clipName || !categoryId) {
                 showToast('Please fill all required fields', 'error');
                 return;
             }
             
-            // Add new category if it doesn't exist
-            const categoryExists = state.categories.some(cat => cat.name.toLowerCase() === categoryName.toLowerCase());
+            // Find category
+            const category = state.categories.find(c => c.id === categoryId);
             
-            if (!categoryExists) {
-                const newCategory = {
-                    id: Date.now(),
-                    name: categoryName,
-                    image: "https://images.unsplash.com/photo-1533279443086-d1c19a186416?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-                    description: `Clips from ${categoryName}`,
-                    clips: [],
-                    views: 0
-                };
-                state.categories.push(newCategory);
-                showToast(`New category "${categoryName}" created!`, 'success');
-            }
-            
-            // Add clip to category
-            const category = state.categories.find(cat => cat.name.toLowerCase() === categoryName.toLowerCase());
             if (category) {
+                // Add clip to category
                 category.clips.push({
                     id: Date.now(),
                     title: clipName,
                     anime: animeName,
                     description: document.getElementById('clip-desc').value || "No description provided",
-                    views: 0
+                    views: 0,
+                    file: null // In a real app, this would be a reference to the uploaded file
                 });
-                showToast(`Clip "${clipName}" uploaded to ${categoryName} category!`, 'success');
+                
+                showToast(`Clip "${clipName}" uploaded to ${category.name} category!`, 'success');
+                
+                // Reset form
+                document.getElementById('anime-name').value = '';
+                document.getElementById('clip-name').value = '';
+                document.getElementById('clip-desc').value = '';
+                categorySelect.selectedIndex = 0;
+                
+                // Update UI
+                updateUI();
+            } else {
+                showToast('Please select a valid category', 'error');
+            }
+        });
+        
+        // Create new category (host only)
+        createCategoryBtn.addEventListener('click', () => {
+            if (!state.isHost) return;
+            
+            const name = document.getElementById('new-category-name').value;
+            const keywords = document.getElementById('new-category-keywords').value;
+            const imageUrl = document.getElementById('category-image-url').value;
+            
+            if (!name) {
+                showToast('Please enter a category name', 'error');
+                return;
             }
             
+            // Create new category
+            const newCategory = {
+                id: Date.now(),
+                name,
+                image: imageUrl || "https://via.placeholder.com/300x200?text=Anime+Image",
+                description: `Clips from ${name}`,
+                keywords: keywords.split(',').map(k => k.trim()).filter(k => k),
+                clips: [],
+                views: 0
+            };
+            
+            state.categories.push(newCategory);
+            showToast(`Category "${name}" created!`, 'success');
+            
             // Reset form
-            document.getElementById('category').value = '';
-            document.getElementById('anime-name').value = '';
-            document.getElementById('clip-name').value = '';
-            document.getElementById('clip-desc').value = '';
-            document.getElementById('category-select').selectedIndex = 0;
+            document.getElementById('new-category-name').value = '';
+            document.getElementById('new-category-keywords').value = '';
+            document.getElementById('category-image-url').value = '';
             
             // Update UI
             updateUI();
@@ -1589,6 +1814,81 @@
                 // Update UI
                 renderVoteList();
                 renderHostVoteList();
+            }
+        }
+        
+        // Show clips for a category
+        function showCategoryClips(categoryId) {
+            const category = state.categories.find(c => c.id === categoryId);
+            if (category) {
+                categoryTitle.textContent = `${category.name} Clips`;
+                clipsGrid.innerHTML = '';
+                
+                if (category.clips.length === 0) {
+                    clipsGrid.innerHTML = '<p style="text-align: center; padding: 3rem; color: var(--gray);">No clips available in this category yet.</p>';
+                } else {
+                    category.clips.forEach(clip => {
+                        const clipCard = document.createElement('div');
+                        clipCard.className = 'clip-card';
+                        clipCard.innerHTML = `
+                            <div class="clip-thumbnail">
+                                <div class="play-icon">
+                                    <i class="fas fa-play"></i>
+                                </div>
+                            </div>
+                            <div class="clip-info">
+                                <div class="clip-title">${clip.title}</div>
+                                <div class="clip-anime">${clip.anime}</div>
+                                <div class="clip-desc">${clip.description}</div>
+                            </div>
+                        `;
+                        clipsGrid.appendChild(clipCard);
+                    });
+                }
+                
+                clipsModal.style.display = 'block';
+            }
+        }
+        
+        // Close clips modal
+        closeClipsModal.addEventListener('click', () => {
+            clipsModal.style.display = 'none';
+        });
+        
+        // Search functionality
+        searchBtn.addEventListener('click', performSearch);
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') performSearch();
+        });
+        
+        function performSearch() {
+            const query = searchInput.value.trim().toLowerCase();
+            if (!query) return;
+            
+            // Search categories by name and keywords
+            const results = state.categories.filter(category => {
+                return (
+                    category.name.toLowerCase().includes(query) ||
+                    category.keywords.some(keyword => keyword.toLowerCase().includes(query))
+                );
+            });
+            
+            if (results.length === 0) {
+                showToast('No categories found matching your search', 'warning');
+            } else {
+                // Highlight first result for demo purposes
+                showToast(`Found ${results.length} categories matching "${query}"`, 'success');
+                
+                // In a real app, you would display the search results
+                // For demo, we'll just scroll to the first matching category
+                const firstResult = document.querySelector(`.category-card[data-id="${results[0].id}"]`);
+                if (firstResult) {
+                    firstResult.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstResult.style.boxShadow = '0 0 20px var(--neon-blue)';
+                    setTimeout(() => {
+                        firstResult.style.boxShadow = '';
+                    }, 3000);
+                }
             }
         }
         
@@ -1623,6 +1923,20 @@
                     userInfo.classList.add('host');
                     userHomepage.style.display = 'none';
                     hostHomepage.style.display = 'block';
+                    
+                    // Update host dashboard stats
+                    document.getElementById('totalClips').textContent = 
+                        state.categories.reduce((total, category) => total + category.clips.length, 0);
+                    document.getElementById('totalCategories').textContent = state.categories.length;
+                    
+                    // Populate category select for clip upload
+                    categorySelect.innerHTML = '<option value="">Select a category</option>';
+                    state.categories.forEach(category => {
+                        const option = document.createElement('option');
+                        option.value = category.id;
+                        option.textContent = category.name;
+                        categorySelect.appendChild(option);
+                    });
                 } else {
                     userInfo.innerHTML = `Welcome, ${state.currentUser.email.split('@')[0]}`;
                     userInfo.classList.remove('host');
@@ -1650,6 +1964,7 @@
             state.categories.forEach(category => {
                 const card = document.createElement('div');
                 card.className = 'category-card';
+                card.dataset.id = category.id;
                 card.innerHTML = `
                     <div class="category-image" style="background-image: url('${category.image}')">
                         <div class="category-name">${category.name}</div>
@@ -1661,26 +1976,18 @@
                             <div class="view-count"><i class="fas fa-eye"></i> ${category.views} views</div>
                         </div>
                         <div class="action-buttons">
-                            <button class="btn btn-action btn-download">Download <i class="fas fa-download"></i></button>
-                            ${state.isHost ? `<button class="btn btn-action btn-delete" onclick="deleteCategory(${category.id})">Delete <i class="fas fa-trash"></i></button>` : ''}
+                            <button class="btn btn-action btn-download">View Clips <i class="fas fa-play"></i></button>
                         </div>
                     </div>
                 `;
+                
+                // Add click event to show clips
+                card.addEventListener('click', () => {
+                    showCategoryClips(category.id);
+                });
+                
                 categoriesSection.appendChild(card);
             });
-        }
-        
-        // Delete category function
-        window.deleteCategory = function(categoryId) {
-            if (!state.isHost) return;
-            
-            const categoryIndex = state.categories.findIndex(cat => cat.id === categoryId);
-            if (categoryIndex !== -1) {
-                const categoryName = state.categories[categoryIndex].name;
-                state.categories.splice(categoryIndex, 1);
-                showToast(`Category "${categoryName}" deleted!`, 'success');
-                updateUI();
-            }
         }
         
         function renderNews() {
@@ -1796,6 +2103,9 @@
                     userVotes: state.userVotes
                 }));
             });
+            
+            // Make functions global for onclick handlers
+            window.removeVote = removeVote;
         });
     </script>
 </body>
