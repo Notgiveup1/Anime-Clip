@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AnimeVerse - Futuristic Anime Clip Sharing</title>
+    <title>AnimeVerse | Futuristic Anime Sharing</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
@@ -100,6 +100,18 @@
         .user-actions {
             display: flex;
             gap: 1rem;
+            align-items: center;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--gray);
+        }
+        
+        .user-info.host {
+            color: var(--neon-blue);
         }
         
         .btn {
@@ -138,6 +150,10 @@
         
         .btn-signup {
             background: linear-gradient(45deg, var(--accent), #ff6b9c);
+        }
+        
+        .btn-logout {
+            background: linear-gradient(45deg, #ff0000, #ff5252);
         }
         
         /* Hero Section */
@@ -193,12 +209,6 @@
             border: none;
             cursor: pointer;
             transition: all 0.3s ease;
-        }
-        
-        .btn-upload {
-            background: linear-gradient(45deg, var(--accent), #ff6b9c);
-            color: white;
-            box-shadow: 0 5px 25px rgba(255, 45, 117, 0.4);
         }
         
         .btn-browse {
@@ -295,6 +305,27 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+        }
+        
+        .btn-action {
+            padding: 0.4rem 1rem;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        
+        .btn-download {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+        }
+        
+        .btn-delete {
+            background: linear-gradient(45deg, #ff0000, #ff5252);
         }
         
         /* News Section */
@@ -486,6 +517,20 @@
             padding: 0.3rem 1rem;
             border-radius: 50px;
             font-weight: 600;
+        }
+        
+        .remove-vote {
+            background: rgba(255, 0, 0, 0.2);
+            color: #ff5252;
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .remove-vote:hover {
+            background: rgba(255, 0, 0, 0.3);
         }
         
         /* Upload Section */
@@ -712,6 +757,102 @@
             -webkit-text-fill-color: transparent;
         }
         
+        .modal-tabs {
+            display: flex;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(90, 70, 255, 0.3);
+        }
+        
+        .tab-btn {
+            padding: 0.8rem 1.5rem;
+            background: transparent;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            font-weight: 600;
+            position: relative;
+        }
+        
+        .tab-btn.active {
+            color: var(--neon-blue);
+        }
+        
+        .tab-btn.active:after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--neon-blue);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Host Dashboard */
+        .host-dashboard {
+            padding: 0 5% 5rem;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .dashboard-card {
+            background: rgba(25, 20, 60, 0.4);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid rgba(90, 70, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .dashboard-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--neon-blue), var(--secondary));
+        }
+        
+        .card-title {
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .card-title i {
+            color: var(--neon-blue);
+        }
+        
+        .card-stats {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-pink));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .card-description {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+        
         /* Responsive Design */
         @media (max-width: 900px) {
             header {
@@ -779,221 +920,153 @@
         </div>
         
         <div class="user-actions">
+            <div class="user-info" id="userInfo"></div>
             <button class="btn btn-login" id="loginBtn">Login</button>
-            <button class="btn btn-signup">Sign Up</button>
+            <button class="btn btn-signup" id="signupBtn">Sign Up</button>
+            <button class="btn btn-logout" id="logoutBtn" style="display: none;">Logout</button>
         </div>
     </header>
     
-    <!-- Hero Section -->
-    <section class="hero">
-        <h1>Share Your Anime Moments</h1>
-        <p>Upload, discover, and download the best anime clips from your favorite series. Join our futuristic community of anime enthusiasts.</p>
-        
-        <div class="cta-buttons">
-            <button class="btn-large btn-upload">Upload Clip <i class="fas fa-cloud-upload-alt"></i></button>
-            <button class="btn-large btn-browse">Browse Library <i class="fas fa-play"></i></button>
-        </div>
-    </section>
-    
-    <!-- Categories Section -->
-    <h2 class="section-title">Popular Categories</h2>
-    <section class="categories">
-        <div class="category-card">
-            <div class="category-image" style="background-image: url('https://images.unsplash.com/photo-1635189779577-555debfa8aae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80');">
-                <div class="category-name">Naruto</div>
-            </div>
-            <div class="category-info">
-                <p>Epic ninja battles and character development in the Hidden Leaf Village.</p>
-                <div class="category-stats">
-                    <div class="clips-count"><i class="fas fa-film"></i> 248 clips</div>
-                    <div class="view-count"><i class="fas fa-eye"></i> 1.2M views</div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="category-card">
-            <div class="category-image" style="background-image: url('https://images.unsplash.com/photo-1635189779242-4b8f8891b871?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80');">
-                <div class="category-name">Dragon Ball Z</div>
-            </div>
-            <div class="category-info">
-                <p>Legendary battles and power-ups that defined a generation of anime.</p>
-                <div class="category-stats">
-                    <div class="clips-count"><i class="fas fa-film"></i> 187 clips</div>
-                    <div class="view-count"><i class="fas fa-eye"></i> 980K views</div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="category-card">
-            <div class="category-image" style="background-image: url('https://images.unsplash.com/photo-1635189779851-5a0b1907c0b5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80');">
-                <div class="category-name">Jujutsu Kaisen</div>
-            </div>
-            <div class="category-info">
-                <p>Modern sorcery battles with stunning animation and intense action.</p>
-                <div class="category-stats">
-                    <div class="clips-count"><i class="fas fa-film"></i> 142 clips</div>
-                    <div class="view-count"><i class="fas fa-eye"></i> 2.3M views</div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="category-card">
-            <div class="category-image" style="background-image: url('https://images.unsplash.com/photo-1635189779855-5a0b1907c0b5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80');">
-                <div class="category-name">Demon Slayer</div>
-            </div>
-            <div class="category-info">
-                <p>Breathtaking animation and emotional storytelling in Taisho-era Japan.</p>
-                <div class="category-stats">
-                    <div class="clips-count"><i class="fas fa-film"></i> 205 clips</div>
-                    <div class="view-count"><i class="fas fa-eye"></i> 3.1M views</div>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- News Section -->
-    <h2 class="section-title">Latest Anime News</h2>
-    <section class="news-section">
-        <div class="news-container">
-            <div class="news-grid">
-                <div class="news-card">
-                    <div class="news-date">June 18, 2025</div>
-                    <div class="news-title">New Season of Jujutsu Kaisen Announced</div>
-                    <div class="news-excerpt">Studio MAPPA confirms production of Jujutsu Kaisen season 3 with a stunning new trailer showcasing epic battles.</div>
-                </div>
-                
-                <div class="news-card">
-                    <div class="news-date">June 15, 2025</div>
-                    <div class="news-title">Demon Slayer Movie Breaks Records</div>
-                    <div class="news-excerpt">The new Demon Slayer movie has become the highest-grossing anime film of all time in just two weeks.</div>
-                </div>
-                
-                <div class="news-card">
-                    <div class="news-date">June 12, 2025</div>
-                    <div class="news-title">One Piece Manga Reaches Final Saga</div>
-                    <div class="news-excerpt">Eiichiro Oda announces that the beloved pirate adventure is entering its final story arc after 25 years.</div>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- Voting Section -->
-    <h2 class="section-title">Vote for New Anime</h2>
-    <section class="voting-section">
-        <div class="voting-container">
-            <p>Help us decide which anime to add next! Vote for your favorite unlisted series.</p>
+    <!-- User Homepage -->
+    <div id="userHomepage">
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>Discover Amazing Anime Moments</h1>
+            <p>Download the best anime clips from your favorite series. Join our futuristic community of anime enthusiasts.</p>
             
-            <div class="voting-form">
-                <input type="text" placeholder="Anime Name">
-                <input type="text" placeholder="Keywords (comma separated)">
-                <button class="btn-vote">Vote Now <i class="fas fa-vote-yea"></i></button>
+            <div class="cta-buttons">
+                <button class="btn-large btn-browse">Browse Library <i class="fas fa-play"></i></button>
+            </div>
+        </section>
+        
+        <!-- Categories Section -->
+        <h2 class="section-title">Popular Categories</h2>
+        <section class="categories" id="categoriesSection">
+            <!-- Categories will be loaded dynamically -->
+        </section>
+        
+        <!-- News Section -->
+        <h2 class="section-title">Latest Anime News</h2>
+        <section class="news-section">
+            <div class="news-container">
+                <div class="news-grid" id="newsSection">
+                    <!-- News will be loaded dynamically -->
+                </div>
+            </div>
+        </section>
+        
+        <!-- Voting Section -->
+        <h2 class="section-title">Vote for New Anime</h2>
+        <section class="voting-section">
+            <div class="voting-container">
+                <p>Help us decide which anime to add next! Vote for your favorite unlisted series.</p>
+                
+                <div class="voting-form">
+                    <input type="text" id="animeNameInput" placeholder="Anime Name">
+                    <input type="text" id="animeKeywords" placeholder="Keywords (comma separated)">
+                    <button class="btn-vote" id="voteBtn">Vote Now <i class="fas fa-vote-yea"></i></button>
+                </div>
+                
+                <div class="vote-list" id="voteList">
+                    <!-- Vote items will be loaded dynamically -->
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- Host Homepage -->
+    <div id="hostHomepage" style="display: none;">
+        <section class="hero">
+            <h1>Host Dashboard</h1>
+            <p>Manage your anime clips, categories, and community content</p>
+        </section>
+        
+        <section class="host-dashboard">
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <div class="card-title"><i class="fas fa-film"></i> Total Clips</div>
+                    <div class="card-stats" id="totalClips">42</div>
+                    <div class="card-description">Anime clips available for download</div>
+                </div>
+                
+                <div class="dashboard-card">
+                    <div class="card-title"><i class="fas fa-layer-group"></i> Categories</div>
+                    <div class="card-stats" id="totalCategories">5</div>
+                    <div class="card-description">Anime categories on the platform</div>
+                </div>
+                
+                <div class="dashboard-card">
+                    <div class="card-title"><i class="fas fa-users"></i> Active Users</div>
+                    <div class="card-stats" id="activeUsers">128</div>
+                    <div class="card-description">Users active in the last 30 days</div>
+                </div>
             </div>
             
-            <div class="vote-list">
-                <div class="vote-item">
-                    <div class="vote-rank">1</div>
-                    <div class="vote-info">
-                        <div class="vote-name">Chainsaw Man</div>
-                        <div class="vote-keywords">Denji, Makima, action, horror</div>
-                    </div>
-                    <div class="vote-count">1,248 votes</div>
-                </div>
-                
-                <div class="vote-item">
-                    <div class="vote-rank">2</div>
-                    <div class="vote-info">
-                        <div class="vote-name">Attack on Titan: Final Chapter</div>
-                        <div class="vote-keywords">Eren, Mikasa, titans, finale</div>
-                    </div>
-                    <div class="vote-count">1,112 votes</div>
-                </div>
-                
-                <div class="vote-item">
-                    <div class="vote-rank">3</div>
-                    <div class="vote-info">
-                        <div class="vote-name">My Hero Academia Season 7</div>
-                        <div class="vote-keywords">Deku, All Might, heroes, villains</div>
-                    </div>
-                    <div class="vote-count">987 votes</div>
-                </div>
-                
-                <div class="vote-item">
-                    <div class="vote-rank">4</div>
-                    <div class="vote-info">
-                        <div class="vote-name">Bleach: Thousand-Year Blood War</div>
-                        <div class="vote-keywords">Ichigo, Soul Society, Quincy, final arc</div>
-                    </div>
-                    <div class="vote-count">845 votes</div>
-                </div>
-                
-                <div class="vote-item">
-                    <div class="vote-rank">5</div>
-                    <div class="vote-info">
-                        <div class="vote-name">One Punch Man Season 3</div>
-                        <div class="vote-keywords">Saitama, Genos, heroes, monsters</div>
-                    </div>
-                    <div class="vote-count">712 votes</div>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- Upload Section -->
-    <h2 class="section-title">Host Dashboard</h2>
-    <section class="upload-section">
-        <div class="upload-container">
-            <p>As a host, you can create categories, upload clips, and manage content.</p>
+            <h2 class="section-title">Manage Content</h2>
             
-            <div class="upload-form">
-                <div>
-                    <div class="form-group">
-                        <label for="category">Create New Category</label>
-                        <input type="text" id="category" placeholder="Category Name">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="anime-name">Anime Name</label>
-                        <input type="text" id="anime-name" placeholder="Enter anime name">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="clip-name">Clip Title</label>
-                        <input type="text" id="clip-name" placeholder="Enter clip title">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="clip-desc">Clip Description</label>
-                        <textarea id="clip-desc" rows="3" placeholder="Describe your clip"></textarea>
-                    </div>
-                </div>
+            <div class="upload-container">
+                <p>As a host, you can create categories, upload clips, and manage content.</p>
                 
-                <div>
-                    <div class="form-group">
-                        <label>Upload Clip</label>
-                        <div class="file-upload">
-                            <i class="fas fa-cloud-upload-alt"></i>
-                            <p>Drag & drop your clip here</p>
-                            <p>or</p>
-                            <button class="btn">Browse Files</button>
+                <div class="upload-form">
+                    <div>
+                        <div class="form-group">
+                            <label for="category">Create New Category</label>
+                            <input type="text" id="category" placeholder="Category Name">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="anime-name">Anime Name</label>
+                            <input type="text" id="anime-name" placeholder="Enter anime name">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="clip-name">Clip Title</label>
+                            <input type="text" id="clip-name" placeholder="Enter clip title">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="clip-desc">Clip Description</label>
+                            <textarea id="clip-desc" rows="3" placeholder="Describe your clip"></textarea>
                         </div>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="category-select">Select Category</label>
-                        <select id="category-select">
-                            <option value="">Select a category</option>
-                            <option value="naruto">Naruto</option>
-                            <option value="dbz">Dragon Ball Z</option>
-                            <option value="jujutsu">Jujutsu Kaisen</option>
-                            <option value="demonslayer">Demon Slayer</option>
-                        </select>
+                    <div>
+                        <div class="form-group">
+                            <label>Upload Clip</label>
+                            <div class="file-upload" id="fileUpload">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Drag & drop your clip here</p>
+                                <p>or</p>
+                                <button class="btn">Browse Files</button>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="category-select">Select Category</label>
+                            <select id="category-select">
+                                <option value="">Select a category</option>
+                                <option value="naruto">Naruto</option>
+                                <option value="dbz">Dragon Ball Z</option>
+                                <option value="jujutsu">Jujutsu Kaisen</option>
+                                <option value="demonslayer">Demon Slayer</option>
+                            </select>
+                        </div>
+                        
+                        <button class="btn-submit" id="uploadClipBtn">Upload Clip <i class="fas fa-upload"></i></button>
                     </div>
-                    
-                    <button class="btn-submit">Upload Clip <i class="fas fa-upload"></i></button>
                 </div>
             </div>
-        </div>
-    </section>
+            
+            <h2 class="section-title">Manage Votes</h2>
+            <div class="voting-container">
+                <p>Manage the voting list and remove inappropriate entries.</p>
+                
+                <div class="vote-list" id="hostVoteList">
+                    <!-- Vote items with remove buttons will be loaded dynamically -->
+                </div>
+            </div>
+        </section>
+    </div>
     
     <!-- Footer -->
     <footer>
@@ -1046,97 +1119,491 @@
         </div>
     </footer>
     
-    <!-- Login Modal -->
-    <div class="modal" id="loginModal">
+    <!-- Login/Signup Modal -->
+    <div class="modal" id="authModal">
         <div class="modal-content">
             <span class="close-modal" id="closeModal">&times;</span>
-            <h3 class="modal-title">Login to AnimeVerse</h3>
+            <h3 class="modal-title">Welcome to AnimeVerse</h3>
             
-            <div class="form-group">
-                <label for="login-email">Email</label>
-                <input type="email" id="login-email" placeholder="Enter your email">
+            <div class="modal-tabs">
+                <button class="tab-btn active" data-tab="login">Login</button>
+                <button class="tab-btn" data-tab="signup">Sign Up</button>
             </div>
             
-            <div class="form-group">
-                <label for="login-password">Password</label>
-                <input type="password" id="login-password" placeholder="Enter your password">
+            <div class="tab-content active" id="loginTab">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" placeholder="Enter your email">
+                </div>
+                
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" placeholder="Enter your password">
+                </div>
+                
+                <div style="text-align: right; margin-bottom: 1.5rem;">
+                    <a href="#" style="color: var(--neon-blue); text-decoration: none;">Forgot Password?</a>
+                </div>
+                
+                <button class="btn-submit" id="loginSubmit">Login <i class="fas fa-sign-in-alt"></i></button>
             </div>
             
-            <div style="text-align: right; margin-bottom: 1.5rem;">
-                <a href="#" style="color: var(--neon-blue); text-decoration: none;">Forgot Password?</a>
-            </div>
-            
-            <button class="btn-submit">Login <i class="fas fa-sign-in-alt"></i></button>
-            
-            <p style="text-align: center; margin-top: 1.5rem; color: var(--gray);">
-                Don't have an account? <a href="#" style="color: var(--neon-pink); text-decoration: none;">Sign Up</a>
-            </p>
-            
-            <div style="margin-top: 2rem; text-align: center;">
-                <p style="color: var(--neon-blue); margin-bottom: 0.5rem;">Host Login:</p>
-                <p>Email: bijoydas61645@gmail.com</p>
-                <p>Password: Bijoydas61645</p>
+            <div class="tab-content" id="signupTab">
+                <div class="form-group">
+                    <label for="signup-email">Email</label>
+                    <input type="email" id="signup-email" placeholder="Enter your email">
+                </div>
+                
+                <div class="form-group">
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" placeholder="Create a password">
+                </div>
+                
+                <div class="form-group">
+                    <label for="signup-confirm">Confirm Password</label>
+                    <input type="password" id="signup-confirm" placeholder="Confirm your password">
+                </div>
+                
+                <button class="btn-submit" id="signupSubmit">Sign Up <i class="fas fa-user-plus"></i></button>
             </div>
         </div>
     </div>
     
     <script>
-        // Modal functionality
+        // App State
+        const state = {
+            currentUser: null,
+            isHost: false,
+            categories: [
+                {
+                    id: 1,
+                    name: "Naruto",
+                    image: "https://images.unsplash.com/photo-1635189779577-555debfa8aae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                    description: "Epic ninja battles and character development in the Hidden Leaf Village.",
+                    clips: 248,
+                    views: 1200000
+                },
+                {
+                    id: 2,
+                    name: "Dragon Ball Z",
+                    image: "https://images.unsplash.com/photo-1635189779242-4b8f8891b871?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                    description: "Legendary battles and power-ups that defined a generation of anime.",
+                    clips: 187,
+                    views: 980000
+                },
+                {
+                    id: 3,
+                    name: "Jujutsu Kaisen",
+                    image: "https://images.unsplash.com/photo-1635189779851-5a0b1907c0b5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                    description: "Modern sorcery battles with stunning animation and intense action.",
+                    clips: 142,
+                    views: 2300000
+                },
+                {
+                    id: 4,
+                    name: "Demon Slayer",
+                    image: "https://images.unsplash.com/photo-1635189779855-5a0b1907c0b5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+                    description: "Breathtaking animation and emotional storytelling in Taisho-era Japan.",
+                    clips: 205,
+                    views: 3100000
+                }
+            ],
+            news: [
+                {
+                    id: 1,
+                    date: "June 18, 2025",
+                    title: "New Season of Jujutsu Kaisen Announced",
+                    excerpt: "Studio MAPPA confirms production of Jujutsu Kaisen season 3 with a stunning new trailer showcasing epic battles."
+                },
+                {
+                    id: 2,
+                    date: "June 15, 2025",
+                    title: "Demon Slayer Movie Breaks Records",
+                    excerpt: "The new Demon Slayer movie has become the highest-grossing anime film of all time in just two weeks."
+                },
+                {
+                    id: 3,
+                    date: "June 12, 2025",
+                    title: "One Piece Manga Reaches Final Saga",
+                    excerpt: "Eiichiro Oda announces that the beloved pirate adventure is entering its final story arc after 25 years."
+                }
+            ],
+            votes: [] // Will be populated by user votes
+        };
+
+        // DOM Elements
+        const authModal = document.getElementById('authModal');
         const loginBtn = document.getElementById('loginBtn');
-        const loginModal = document.getElementById('loginModal');
+        const signupBtn = document.getElementById('signupBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
         const closeModal = document.getElementById('closeModal');
-        
+        const loginSubmit = document.getElementById('loginSubmit');
+        const signupSubmit = document.getElementById('signupSubmit');
+        const userInfo = document.getElementById('userInfo');
+        const userHomepage = document.getElementById('userHomepage');
+        const hostHomepage = document.getElementById('hostHomepage');
+        const categoriesSection = document.getElementById('categoriesSection');
+        const newsSection = document.getElementById('newsSection');
+        const voteList = document.getElementById('voteList');
+        const hostVoteList = document.getElementById('hostVoteList');
+        const voteBtn = document.getElementById('voteBtn');
+        const uploadClipBtn = document.getElementById('uploadClipBtn');
+
+        // Modal functionality
         loginBtn.addEventListener('click', () => {
-            loginModal.style.display = 'flex';
+            showModal();
+        });
+        
+        signupBtn.addEventListener('click', () => {
+            showModal();
+            switchTab('signup');
         });
         
         closeModal.addEventListener('click', () => {
-            loginModal.style.display = 'none';
+            authModal.style.display = 'none';
         });
         
         window.addEventListener('click', (e) => {
-            if (e.target === loginModal) {
-                loginModal.style.display = 'none';
+            if (e.target === authModal) {
+                authModal.style.display = 'none';
             }
         });
         
-        // Animation for cards on scroll
-        const observerOptions = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.1
-        };
-        
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = 1;
-                    entry.target.style.transform = 'translateY(0)';
-                }
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(tab => {
+            tab.addEventListener('click', () => {
+                switchTab(tab.dataset.tab);
             });
-        }, observerOptions);
-        
-        // Apply animation to elements
-        document.querySelectorAll('.category-card, .news-card, .vote-item').forEach(card => {
-            card.style.opacity = 0;
-            card.style.transform = 'translateY(20px)';
-            card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-            observer.observe(card);
         });
         
-        // Simulate file upload
-        document.querySelector('.file-upload').addEventListener('click', function() {
-            alert('Clip upload functionality would be implemented with Firebase Storage in a real application');
+        // Login functionality
+        loginSubmit.addEventListener('click', () => {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            if (!email || !password) {
+                alert('Please enter both email and password');
+                return;
+            }
+            
+            // Host login
+            if (email === "bijoydas61645@gmail.com" && password === "Bijoydas61645") {
+                state.currentUser = { email, role: 'host' };
+                state.isHost = true;
+                authModal.style.display = 'none';
+                updateUI();
+                return;
+            }
+            
+            // Regular user login
+            const users = JSON.parse(localStorage.getItem('animeverse_users')) || [];
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                state.currentUser = user;
+                authModal.style.display = 'none';
+                updateUI();
+            } else {
+                alert('Invalid email or password');
+            }
         });
         
-        // Voting functionality
-        document.querySelector('.btn-vote').addEventListener('click', function() {
-            const animeName = document.querySelector('.voting-form input:first-child').value;
+        // Signup functionality
+        signupSubmit.addEventListener('click', () => {
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const confirm = document.getElementById('signup-confirm').value;
+            
+            if (!email || !password || !confirm) {
+                alert('Please fill all fields');
+                return;
+            }
+            
+            if (password !== confirm) {
+                alert('Passwords do not match');
+                return;
+            }
+            
+            const users = JSON.parse(localStorage.getItem('animeverse_users')) || [];
+            
+            if (users.find(u => u.email === email)) {
+                alert('Email already registered');
+                return;
+            }
+            
+            const newUser = {
+                email,
+                password,
+                role: 'user',
+                joined: new Date().toISOString()
+            };
+            
+            users.push(newUser);
+            localStorage.setItem('animeverse_users', JSON.stringify(users));
+            
+            state.currentUser = newUser;
+            authModal.style.display = 'none';
+            updateUI();
+            alert('Account created successfully!');
+        });
+        
+        // Logout functionality
+        logoutBtn.addEventListener('click', () => {
+            state.currentUser = null;
+            state.isHost = false;
+            updateUI();
+        });
+        
+        // Vote functionality
+        voteBtn.addEventListener('click', () => {
+            if (!state.currentUser) {
+                alert('Please login to vote');
+                showModal();
+                return;
+            }
+            
+            const animeName = document.getElementById('animeNameInput').value;
+            const keywords = document.getElementById('animeKeywords').value;
+            
             if (!animeName) {
                 alert('Please enter an anime name');
                 return;
             }
-            alert(`Vote for "${animeName}" recorded! In a real application, this would update the Firestore database.`);
+            
+            // Check if this anime already has votes
+            const existingVote = state.votes.find(v => v.name.toLowerCase() === animeName.toLowerCase());
+            
+            if (existingVote) {
+                existingVote.count++;
+                existingVote.voters.push(state.currentUser.email);
+            } else {
+                state.votes.push({
+                    id: Date.now(),
+                    name: animeName,
+                    keywords: keywords.split(',').map(k => k.trim()),
+                    count: 1,
+                    voters: [state.currentUser.email],
+                    timestamp: new Date().toISOString()
+                });
+            }
+            
+            // Sort by vote count
+            state.votes.sort((a, b) => b.count - a.count);
+            
+            // Only keep top 10
+            state.votes = state.votes.slice(0, 10);
+            
+            // Update UI
+            renderVoteList();
+            
+            // Clear inputs
+            document.getElementById('animeNameInput').value = '';
+            document.getElementById('animeKeywords').value = '';
+            
+            alert(`Vote for "${animeName}" recorded!`);
+        });
+        
+        // Upload clip functionality (host only)
+        uploadClipBtn.addEventListener('click', () => {
+            if (!state.isHost) return;
+            
+            const category = document.getElementById('category').value;
+            const animeName = document.getElementById('anime-name').value;
+            const clipName = document.getElementById('clip-name').value;
+            
+            if (!category || !animeName || !clipName) {
+                alert('Please fill all required fields');
+                return;
+            }
+            
+            alert(`Clip "${clipName}" from ${animeName} uploaded to ${category} category!`);
+            
+            // Reset form
+            document.getElementById('category').value = '';
+            document.getElementById('anime-name').value = '';
+            document.getElementById('clip-name').value = '';
+            document.getElementById('clip-desc').value = '';
+            document.getElementById('category-select').selectedIndex = 0;
+        });
+        
+        // Remove vote functionality
+        function removeVote(voteId) {
+            state.votes = state.votes.filter(v => v.id !== voteId);
+            renderVoteList();
+            renderHostVoteList();
+        }
+        
+        // Helper Functions
+        function showModal() {
+            authModal.style.display = 'flex';
+            document.getElementById('login-email').value = '';
+            document.getElementById('login-password').value = '';
+            document.getElementById('signup-email').value = '';
+            document.getElementById('signup-password').value = '';
+            document.getElementById('signup-confirm').value = '';
+        }
+        
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.tab === tabName);
+            });
+            
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.toggle('active', content.id === `${tabName}Tab`);
+            });
+        }
+        
+        function updateUI() {
+            if (state.currentUser) {
+                loginBtn.style.display = 'none';
+                signupBtn.style.display = 'none';
+                logoutBtn.style.display = 'block';
+                
+                if (state.isHost) {
+                    userInfo.innerHTML = `<i class="fas fa-crown"></i> Host Account`;
+                    userInfo.classList.add('host');
+                    userHomepage.style.display = 'none';
+                    hostHomepage.style.display = 'block';
+                } else {
+                    userInfo.innerHTML = `Welcome, ${state.currentUser.email.split('@')[0]}`;
+                    userInfo.classList.remove('host');
+                    userHomepage.style.display = 'block';
+                    hostHomepage.style.display = 'none';
+                }
+            } else {
+                loginBtn.style.display = 'block';
+                signupBtn.style.display = 'block';
+                logoutBtn.style.display = 'none';
+                userInfo.innerHTML = '';
+                userHomepage.style.display = 'block';
+                hostHomepage.style.display = 'none';
+            }
+            
+            renderCategories();
+            renderNews();
+            renderVoteList();
+            renderHostVoteList();
+        }
+        
+        function renderCategories() {
+            categoriesSection.innerHTML = '';
+            
+            state.categories.forEach(category => {
+                const card = document.createElement('div');
+                card.className = 'category-card';
+                card.innerHTML = `
+                    <div class="category-image" style="background-image: url('${category.image}')">
+                        <div class="category-name">${category.name}</div>
+                    </div>
+                    <div class="category-info">
+                        <p>${category.description}</p>
+                        <div class="category-stats">
+                            <div class="clips-count"><i class="fas fa-film"></i> ${category.clips} clips</div>
+                            <div class="view-count"><i class="fas fa-eye"></i> ${category.views.toLocaleString()} views</div>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="btn btn-action btn-download">Download <i class="fas fa-download"></i></button>
+                            ${state.isHost ? `<button class="btn btn-action btn-delete">Delete <i class="fas fa-trash"></i></button>` : ''}
+                        </div>
+                    </div>
+                `;
+                categoriesSection.appendChild(card);
+            });
+        }
+        
+        function renderNews() {
+            newsSection.innerHTML = '';
+            
+            state.news.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'news-card';
+                card.innerHTML = `
+                    <div class="news-date">${item.date}</div>
+                    <div class="news-title">${item.title}</div>
+                    <div class="news-excerpt">${item.excerpt}</div>
+                `;
+                newsSection.appendChild(card);
+            });
+        }
+        
+        function renderVoteList() {
+            voteList.innerHTML = '';
+            
+            if (state.votes.length === 0) {
+                voteList.innerHTML = '<p style="text-align: center; padding: 2rem; color: var(--gray);">No votes yet. Be the first to vote for an anime!</p>';
+                return;
+            }
+            
+            state.votes.forEach((vote, index) => {
+                const item = document.createElement('div');
+                item.className = 'vote-item';
+                item.innerHTML = `
+                    <div class="vote-rank">${index + 1}</div>
+                    <div class="vote-info">
+                        <div class="vote-name">${vote.name}</div>
+                        <div class="vote-keywords">${vote.keywords.join(', ')}</div>
+                    </div>
+                    <div class="vote-count">${vote.count} votes</div>
+                `;
+                voteList.appendChild(item);
+            });
+        }
+        
+        function renderHostVoteList() {
+            if (!state.isHost) return;
+            
+            hostVoteList.innerHTML = '';
+            
+            if (state.votes.length === 0) {
+                hostVoteList.innerHTML = '<p style="text-align: center; padding: 2rem; color: var(--gray);">No votes yet.</p>';
+                return;
+            }
+            
+            state.votes.forEach((vote, index) => {
+                const item = document.createElement('div');
+                item.className = 'vote-item';
+                item.innerHTML = `
+                    <div class="vote-rank">${index + 1}</div>
+                    <div class="vote-info">
+                        <div class="vote-name">${vote.name}</div>
+                        <div class="vote-keywords">${vote.keywords.join(', ')}</div>
+                    </div>
+                    <div class="vote-count">${vote.count} votes</div>
+                    <button class="remove-vote" onclick="removeVote(${vote.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                `;
+                hostVoteList.appendChild(item);
+            });
+        }
+        
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', () => {
+            updateUI();
+            
+            // Animation for cards on scroll
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+            
+            // Apply animation to elements
+            document.querySelectorAll('.category-card, .news-card, .vote-item').forEach(card => {
+                card.style.opacity = 0;
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                observer.observe(card);
+            });
         });
     </script>
 </body>
